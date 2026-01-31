@@ -12,6 +12,13 @@ namespace VentasBlazor.Web
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+            if(string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new InvalidOperationException("The connection string 'DefaultConnection' was not found.");
+            }
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
