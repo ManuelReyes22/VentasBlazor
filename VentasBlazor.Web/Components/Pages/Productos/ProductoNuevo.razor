@@ -1,0 +1,43 @@
+﻿@page "/productos/crear"
+
+<h3 class="mb-4">Nuevo Producto</h3>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <EditForm Model="_producto" OnValidSubmit="GuardarProducto">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label class="form-label">Código</label>
+                <InputText class="form-control"
+                           @bind-Value="_producto.Codigo"
+                           placeholder="Ej. PROD-001" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Descripción</label>
+                <InputText class="form-control"
+                           @bind-Value="_producto.Descripcion"
+                           placeholder="Descripción del producto" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Valor unitario</label>
+                <InputNumber class="form-control"
+                             @bind-Value="_producto.ValorUnitario" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save"></i> Guardar
+            </button>
+        </EditForm>
+
+        @if (!string.IsNullOrEmpty(_mensaje))
+        {
+            <div class="alert alert-success mt-3">
+                @_mensaje
+            </div>
+        }
+    </div>
+</div>

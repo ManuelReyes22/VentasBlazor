@@ -1,4 +1,7 @@
 using VentasBlazor.Web.Components;
+using VentasBlazor.Web.Model.Commands;
+using VentasBlazor.Web.Model.Database;
+using VentasBlazor.Web.Model.Services;
 
 namespace VentasBlazor.Web
 {
@@ -18,6 +21,10 @@ namespace VentasBlazor.Web
             {
                 throw new InvalidOperationException("The connection string 'DefaultConnection' was not found.");
             }
+
+            builder.Services.AddScoped<SQLServer>(sql => new SQLServer(connectionString));
+            builder.Services.AddScoped<ProductoCommand>();
+            builder.Services.AddScoped<ProductoService>();
 
             var app = builder.Build();
 
