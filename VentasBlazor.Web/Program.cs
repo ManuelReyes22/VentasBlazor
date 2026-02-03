@@ -17,14 +17,21 @@ namespace VentasBlazor.Web
 
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-            if(string.IsNullOrWhiteSpace(connectionString))
+            if (string.IsNullOrWhiteSpace(connectionString))
             {
                 throw new InvalidOperationException("The connection string 'DefaultConnection' was not found.");
             }
 
+            // Registro de servicios de base de datos y lógica
             builder.Services.AddScoped<SQLServer>(sql => new SQLServer(connectionString));
+
+            // Servicios y comandos para Productos
             builder.Services.AddScoped<ProductoCommand>();
             builder.Services.AddScoped<ProductoService>();
+
+            // Servicios y comandos para Clientes
+            builder.Services.AddScoped<ClienteCommand>();
+            builder.Services.AddScoped<ClienteService>();
 
             var app = builder.Build();
 
