@@ -6,15 +6,23 @@ namespace VentasBlazor.Web.Model.Services
     public class ClienteService
     {
         private readonly ClienteCommand _clienteCommand;
+        private readonly ClienteCorreoService _clienteCorreoService;
 
-        public ClienteService(ClienteCommand clienteCommand)
+        public ClienteService(ClienteCommand clienteCommand, ClienteCorreoService clienteCorreoService)
         {
             _clienteCommand = clienteCommand;
+            _clienteCorreoService = clienteCorreoService;
         }
 
         public async Task<int> CrearClienteAsync(Cliente cliente)
         {
-            return await _clienteCommand.InsertClienteAsync(cliente);
+            var clienteId = await _clienteCommand.InsertClienteAsync(cliente);
+            foreach (var correo in cliente.Correos)
+            {
+                correo.ClienteId = clienteId;
+                await _clienteCorreoService.InsertClienteCorreoAsync(correo);
+            }
+            return clienteId;
         }
     }
 }

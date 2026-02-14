@@ -15,13 +15,13 @@ namespace VentasBlazor.Web.Model.Commands
 
         public async Task<int> InsertClienteAsync(Cliente cliente)
         {
-            var query = "INSERT INTO Clientes (Nombre, RFC) VALUES (@Nombre, @RFC)";
+            var query = "INSERT INTO Clientes (Nombre, RFC) VALUES (@Nombre, @RFC); select Scope_Identity()";
             var parameters = new[]
             {
                 new SqlParameter("@Nombre", cliente.Nombre),
                 new SqlParameter("@RFC", cliente.RFC)
             };
-            return await _sqlServer.NonQueryAsync(query, parameters);
+            return await _sqlServer.ScalarAsync<int>(query, parameters);
         }
     }
 }
