@@ -18,7 +18,7 @@
 
     <button type="submit" class="btn btn-primary">Guardar</button>
 
-    @if (!string.IsNullOrEmpty(_mensaje))
+    @if (!string.IsNullOrWhiteSpace(_mensaje))
     {
         <div class="alert alert-success mt-3">@_mensaje</div>
     }
