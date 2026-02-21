@@ -21,5 +21,15 @@ namespace VentasBlazor.Web.Model.Commands
             };
             return await _sqlServer.NonQueryAsync(query, parameters);
         }
+        public async Task<int> InsertClienteCorreoTransactionAsync(SqlConnection connection, SqlTransaction transaction, ClienteCorreo clienteCorreo)
+        {
+            var query = "INSERT INTO ClientesCorreos (ClienteId, Correo) VALUES (@ClienteId, @Correo)";
+            var parameters = new[]
+            {
+                new SqlParameter("@ClienteId", clienteCorreo.ClienteId),
+                new SqlParameter("@Correo", clienteCorreo.Correo)
+            };
+            return await _sqlServer.NonQueryAsync(connection, transaction, query, parameters);
+        }
     }
 }

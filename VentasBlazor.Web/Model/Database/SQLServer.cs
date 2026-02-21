@@ -95,9 +95,13 @@ namespace VentasBlazor.Web.Model.Database
                 await connection.OpenAsync();
             }
 
+
             object result = await sqlCommand.ExecuteScalarAsync();
 
-            return result is T value ? value : default;
+            if (result is null || result is DBNull)
+                return default;
+
+            return (T)Convert.ChangeType(result, typeof(T));
         }
         public async Task<T> ReaderAsync<T>(string query, SqlParameter[] parameters = null) where T : class, new()
         {

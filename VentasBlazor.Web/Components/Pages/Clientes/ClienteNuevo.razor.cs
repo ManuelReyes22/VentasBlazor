@@ -15,7 +15,7 @@ namespace VentasBlazor.Web.Components.Pages.Clientes
             var correo = new ClienteCorreo { Correo = "manuel202reyes.com" };
             _cliente.Correos.Add(correo);
 
-            var clienteId = await ClienteService.CrearClienteAsync(_cliente);
+            var clienteId = await ClienteService.CrearClienteTransactionAsync(_cliente);
             if (clienteId > 0)
             {
                 _mensaje = $"Cliente guardado correctamente {clienteId}";

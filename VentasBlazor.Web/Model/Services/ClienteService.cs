@@ -24,5 +24,10 @@ namespace VentasBlazor.Web.Model.Services
             }
             return clienteId;
         }
+        public async Task<int> CrearClienteTransactionAsync(Cliente cliente)
+        {
+            var clienteId = await _clienteCommand.InsertClienteTransactionAsync(cliente);
+            return clienteId;
+        }
     }
 }
