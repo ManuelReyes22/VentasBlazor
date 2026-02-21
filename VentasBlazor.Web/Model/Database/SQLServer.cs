@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Reflection;
 
 namespace VentasBlazor.Web.Model.Database
 {
@@ -97,6 +98,93 @@ namespace VentasBlazor.Web.Model.Database
             object result = await sqlCommand.ExecuteScalarAsync();
 
             return result is T value ? value : default;
+        }
+        public async Task<T> ReaderAsync<T>(string query, SqlParameter[] parameters = null) where T : class, new()
+        {
+            await using SqlConnection sqlConnection = GetConnection();
+            await using SqlCommand sqlCommand = new(query, sqlConnection)
+            {
+                CommandType = CommandType.Text
+            };
+
+            if (parameters is not null)
+            {
+                sqlCommand.Parameters.AddRange(parameters);
+            }
+
+            await sqlConnection.OpenAsync();
+            await using SqlDataReader reader = await sqlCommand.ExecuteReaderAsync();
+
+            var props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            if (await reader.ReadAsync())
+            {
+                T item = new();
+
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    string columnName = reader.GetName(i);
+
+                    var property = props.FirstOrDefault(p =>
+                        string.Equals(p.Name, columnName, StringComparison.OrdinalIgnoreCase));
+
+                    if (property != null && !reader.IsDBNull(i))
+                    {
+                        object value = reader.GetValue(i);
+                        object converted = Convert.ChangeType(value, Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType);
+                        property.SetValue(item, converted);
+                    }
+                }
+
+                return item;
+            }
+
+            return null;
+        }
+        public async Task<List<T>> ReaderListAsync<T>(string query, SqlParameter[] parameters = null) where T : class, new()
+        {
+
+            await using SqlConnection sqlConnection = GetConnection();
+            await using SqlCommand sqlCommand = new(query, sqlConnection)
+            {
+                CommandType = CommandType.Text
+            };
+
+            if (parameters is not null)
+            {
+                sqlCommand.Parameters.AddRange(parameters);
+            }
+
+            await sqlConnection.OpenAsync();
+            await using SqlDataReader reader = await sqlCommand.ExecuteReaderAsync();
+
+            var lista = new List<T>();
+            var props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            while (await reader.ReadAsync())
+            {
+                T item = new();
+
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    string columnName = reader.GetName(i);
+
+                    var property = props.FirstOrDefault(p =>
+                        string.Equals(p.Name, columnName, StringComparison.OrdinalIgnoreCase));
+
+                    if (property != null && !reader.IsDBNull(i))
+                    {
+                        object value = reader.GetValue(i);
+                        object converted = Convert.
+                            ChangeType(value, Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType);
+                        property.SetValue(item, converted);
+                    }
+                }
+
+                lista.Add(item);
+            }
+
+            return lista;
         }
     }
 }
