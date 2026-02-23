@@ -31,5 +31,16 @@ namespace VentasBlazor.Web.Model.Commands
             };
             return await _sqlServer.NonQueryAsync(connection, transaction, query, parameters);
         }
+        public async Task<List<ClienteCorreo>> GetCorreosByClienteIdAsync(int clienteId)
+        {
+            var query = "SELECT Id, ClienteId, Correo FROM ClientesCorreos WHERE ClienteId = @ClienteId";
+
+            var parameters = new[]
+            {
+        new SqlParameter("@ClienteId", clienteId)
+    };
+
+            return await _sqlServer.ReaderListAsync<ClienteCorreo>(query, parameters);
+        }
     }
 }

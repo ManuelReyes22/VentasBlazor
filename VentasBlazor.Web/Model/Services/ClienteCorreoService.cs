@@ -14,5 +14,9 @@ namespace VentasBlazor.Web.Model.Services
         {
             return await _clienteCorreoCommand.InsertClienteCorreoAsync(clienteCorreo);
         }
+        public async Task<List<ClienteCorreo>> ObtenerCorreosPorClienteIdAsync(int clienteId)
+        {
+            return await _clienteCorreoCommand.GetCorreosByClienteIdAsync(clienteId);
+        }
     }
 }

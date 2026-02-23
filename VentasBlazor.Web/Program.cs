@@ -36,6 +36,10 @@ namespace VentasBlazor.Web
             builder.Services.AddScoped<ClienteCorreoCommand>();
             builder.Services.AddScoped<ClienteCorreoService>();
 
+            builder.Services.AddScoped<VentaDetalleCommand>();
+            builder.Services.AddScoped<VentaCommand>();
+            builder.Services.AddScoped<VentaService>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

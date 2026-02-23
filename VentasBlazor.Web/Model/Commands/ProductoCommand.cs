@@ -24,5 +24,10 @@ namespace VentasBlazor.Web.Model.Commands
             };
             return await _sqlServer.NonQueryAsync(query, parameters);
         }
+        public async Task<List<Producto>> GetProductosAsync()
+        {
+            var query = "SELECT Id, Codigo, Descripcion, ValorUnitario FROM Productos";
+            return await _sqlServer.ReaderListAsync<Producto>(query);
+        }
     }
 }

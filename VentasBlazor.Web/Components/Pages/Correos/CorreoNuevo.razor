@@ -1,0 +1,53 @@
+﻿@page "/correos/crear"
+
+<h3>Agregar Correo a Cliente</h3>
+
+<div>
+    <label><strong>Cliente:</strong></label>
+    <select @onchange="ClienteSeleccionado">
+        <option value="">Seleccione un cliente</option>
+        @foreach (var cliente in _clientes)
+        {
+            <option value="@cliente.Id">
+                @cliente.Nombre - @cliente.RFC
+            </option>
+        }
+    </select>
+</div>
+
+@if (_clienteIdSeleccionado > 0)
+{
+    <div style="margin-top:15px;">
+        <label>Nuevo Correo:</label>
+        <input type="email" @bind="_nuevoCorreo.Correo" />
+
+        <button @onclick="GuardarCorreo" style="margin-left:10px;">
+            Guardar Correo
+        </button>
+    </div>
+
+    <hr />
+
+    <h4>Correos existentes</h4>
+
+    @if (_correos.Any())
+    {
+        <ul>
+            @foreach (var correo in _correos)
+            {
+                <li>@correo.Correo</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Este cliente no tiene correos registrados.</p>
+    }
+}
+
+@if (!string.IsNullOrEmpty(_mensaje))
+{
+    <p style="color:green; margin-top:10px;">
+        @_mensaje
+    </p>
+}

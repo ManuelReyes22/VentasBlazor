@@ -1,0 +1,112 @@
+﻿@page "/ventas/crear"
+
+<h3>Nueva Venta</h3>
+
+<div>
+    <label><strong>Cliente:</strong></label>
+    <select @onchange="ClienteSeleccionado">
+        <option value="">Seleccione un cliente</option>
+        @foreach (var cliente in _clientes)
+        {
+            <option value="@cliente.Id">
+                @cliente.Nombre - @cliente.RFC
+            </option>
+        }
+    </select>
+</div>
+
+@if (_correos.Any())
+{
+    <div style="margin-top:10px;">
+        <strong>Correos del cliente:</strong>
+        <ul>
+            @foreach (var correo in _correos)
+            {
+                <li>@correo.Correo</li>
+            }
+        </ul>
+    </div>
+}
+
+<hr />
+
+<h4>Agregar Producto</h4>
+
+<div style="margin-bottom:15px;">
+
+    <label>Producto:</label>
+    <select @bind="_nuevoDetalle.ProductoId">
+        <option value="">Seleccione producto</option>
+        @foreach (var producto in _productos)
+        {
+            <option value="@producto.Id">
+                @producto.Descripcion - $@producto.ValorUnitario
+            </option>
+        }
+    </select>
+
+    <label style="margin-left:10px;">Cantidad:</label>
+    <input type="number" min="1" @bind="_nuevoDetalle.Cantidad" style="width:80px;" />
+
+    <button @onclick="AgregarProducto" style="margin-left:10px;">
+        Agregar
+    </button>
+
+</div>
+
+<hr />
+
+<h4>Productos en la venta</h4>
+
+@if (_venta.Detalles.Any())
+{
+    <table border="1" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Subtotal</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in _venta.Detalles)
+            {
+                <tr>
+                    <td>
+                        @_productos.FirstOrDefault(p => p.Id == item.ProductoId)?.Descripcion
+                    </td>
+                    <td>@item.Cantidad</td>
+                    <td>$@item.PrecioUnitario</td>
+                    <td>$@item.Subtotal</td>
+                    <td>
+                        <button @onclick="() => EliminarProducto(item)">
+                            X
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No hay productos agregados.</p>
+}
+
+<h3 style="margin-top:15px;">Total: $@_venta.Total</h3>
+
+<br />
+
+<button @onclick="GuardarVenta"
+        disabled="@(!_venta.Detalles.Any() || _venta.ClienteId == 0)">
+    Guardar Venta
+</button>
+
+@if (!string.IsNullOrEmpty(_mensaje))
+{
+    <p style="margin-top:10px; color:green;">
+        @_mensaje
+    </p>
+}
